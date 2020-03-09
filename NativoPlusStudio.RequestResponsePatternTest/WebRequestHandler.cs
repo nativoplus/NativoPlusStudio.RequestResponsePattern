@@ -14,7 +14,7 @@ namespace NativoPlusStudio.RequestResponsePatternTest
     }
     public class Handler : HttpHandler<MyRequest>
     {
-        private readonly ILogger _logger;
+        private readonly new ILogger _logger;
 
         public Handler(ILogger logger) : base(logger) => _logger = logger 
             ?? throw new ArgumentNullException(nameof(logger));
