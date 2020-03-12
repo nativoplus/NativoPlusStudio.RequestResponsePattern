@@ -47,7 +47,7 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new StatusCodeResult((int)model.HttpStatusCode);
         }
 
-        protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default(CancellationToken));
+        protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
 
         protected HttpResponse Ok<TResponse>(TResponse response) where TResponse : class
         {
@@ -87,7 +87,6 @@ namespace NativoPlusStudio.RequestResponsePattern
                 throw new ArgumentNullException(nameof(response));
             }
             _logger.Error("#InternalServerError {@Response}", response);
-            //TODO validation based on the object here. 
             return new HttpResponse
             {
                 Response = response,
