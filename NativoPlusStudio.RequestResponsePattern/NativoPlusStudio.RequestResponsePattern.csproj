@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>This is an opinionated approach that NativoPlus Studio handles request response pattern</Description>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageProjectUrl>https://github.com/nativoplus/NativoPlusStudio.RequestResponsePattern</PackageProjectUrl>
     <PackageTags>API request response pattern</PackageTags>
   </PropertyGroup>
