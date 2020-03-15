@@ -24,9 +24,7 @@ namespace NativoPlusStudio.RequestResponsePattern
                                   .Select(x => new Error { Code = x.ErrorCode, Message = x.ErrorMessage })
                                   .ToList();
             }
-            //
             return new List<Error>();
-        
         }
     }
 
