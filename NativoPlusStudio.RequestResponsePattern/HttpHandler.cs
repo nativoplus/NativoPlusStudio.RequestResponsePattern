@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net;
+using FluentValidation.Results;
 #endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
@@ -65,18 +66,41 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class,new()
         {
             if (response == null)
             {
-                throw new ArgumentNullException(nameof(response));
+                response = new TResponse();
+                _logger.Error("#BadRequest the response was null when sent to the middleware pipeline");
             }
+            //At least we get to record what the response was.
             _logger.Error("#BadRequest {@Response}", response);
+
             return new HttpResponse
             {
                 Response = response,
                 HttpStatusCode = HttpStatusCode.BadRequest,
 
+            };
+        }
+        public HttpResponse BadRequest<TResponse>(string transactionId="", ValidationResult validation) where TResponse :class, new()
+        {
+
+            if (validation == null)
+            {
+                validation = new ValidationResult();
+            }
+            var response = (new HttpStandardResponse<TResponse>
+            {
+                Response = null,
+                Error = new Error().FormatErrors(validation),
+                Status = false,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId)  ?  Guid.NewGuid().ToString() : transactionId
+            });
+            return new HttpResponse
+            {
+                Response = response,
+                HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
         public HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class

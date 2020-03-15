@@ -12,11 +12,20 @@ namespace NativoPlusStudio.RequestResponsePattern
 
         public  IList<Error> FormatErrors (ValidationResult validation)
         {
-            if (!validation.IsValid)
+            //Attempting to guard againts null exception and return value right away. 
+            if (validation == null)
+            {
+                return new List<Error>();
+            }
+            else if (!validation.IsValid)
+            {
+
                 return validation?.Errors
                                   .Select(x => new Error { Code = x.ErrorCode, Message = x.ErrorMessage })
                                   .ToList();
-            else return new List<Error>();
+            }
+            //
+            return new List<Error>();
         
         }
     }
