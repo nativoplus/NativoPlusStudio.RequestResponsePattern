@@ -30,35 +30,24 @@ namespace NativoPlusStudio.RequestResponsePattern
 
         public async Task<IActionResult> Handle(TRequest request, CancellationToken cancellationToken)
         {
-            _logger.Information("#Handle {@Request}", request);
             _logger.Information(nameof(Handle));
+            _logger.Information("#Handle {@Request}", request);
             if (request == null)
             {
                 return new NotFoundResult();
             }
-            _logger.Debug("Beginning request: {@request}", request);
             // https://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f
             var model = await HandleAsync(request, cancellationToken).ConfigureAwait(false);
-
-            if (model.Response != null)
-            {
-                _logger.Information("#Handle {@Response}", model.Response);
-                return new OkObjectResult(model.Response);
-            }
-            return new StatusCodeResult((int)model.HttpStatusCode);
+            _logger.Information("#Handle {@Response}", model?.Response ?? new object());
+            return new OkObjectResult(model?.Response ?? new HttpResponse() { HttpStatusCode = HttpStatusCode.BadRequest, Response = null });
         }
 
         protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
 
-        public HttpResponse Ok<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse Ok<TResponse>(TResponse response) where TResponse : class, new()
         {
 
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-            //TODO validation based on the object here. 
-            _logger.Information("#HandleAsync {@Response}", response);
+            _logger.Information("#HandleAsync {@Response}", response ?? new TResponse());
             return new HttpResponse
             {
                 Response = response,
@@ -66,7 +55,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class,new()
+        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class, new()
         {
             if (response == null)
             {
@@ -74,7 +63,7 @@ namespace NativoPlusStudio.RequestResponsePattern
                 _logger.Error("#BadRequest the response was null when sent to the middleware pipeline");
             }
             //At least we get to record what the response was.
-            _logger.Error("#BadRequest {@Response}", response);
+            _logger.Error("#BadRequest {@Response}", response ?? new TResponse());
 
             return new HttpResponse
             {
@@ -83,7 +72,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        public HttpResponse BadRequest<TResponse>(string transactionId="", ValidationResult validation) where TResponse :class, new()
+        public HttpResponse BadRequest<TResponse>(string transactionId = "", ValidationResult validation) where TResponse : class, new()
         {
 
             if (validation == null)
@@ -95,7 +84,7 @@ namespace NativoPlusStudio.RequestResponsePattern
                 Response = null,
                 Error = new Error().FormatErrors(validation),
                 Status = false,
-                TransactionId = string.IsNullOrWhiteSpace(transactionId)  ?  Guid.NewGuid().ToString() : transactionId
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
             });
             return new HttpResponse
             {
@@ -103,13 +92,9 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
-        public HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class, new()
         {
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-            _logger.Error("#InternalServerError {@Response}", response);
+            _logger.Error("#InternalServerError {@Response}", response ?? new TResponse());
             return new HttpResponse
             {
                 Response = response,
