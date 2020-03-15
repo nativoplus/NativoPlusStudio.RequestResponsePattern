@@ -72,7 +72,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        public HttpResponse BadRequest<TResponse>(string transactionId = "", ValidationResult validation) where TResponse : class, new()
+        public HttpResponse BadRequest<TResponse>(ValidationResult validation, string transactionId = "") where TResponse : class, new()
         {
 
             if (validation == null)
