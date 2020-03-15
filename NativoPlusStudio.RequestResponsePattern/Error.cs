@@ -1,6 +1,8 @@
-﻿using FluentValidation.Results;
+﻿#region Assembly
+using FluentValidation.Results;
 using System.Collections.Generic;
 using System.Linq;
+#endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
     public partial class Error 
@@ -11,7 +13,9 @@ namespace NativoPlusStudio.RequestResponsePattern
         public  IList<Error> FormatErrors (ValidationResult validation)
         {
             if (!validation.IsValid)
-                return validation?.Errors.Select(x => new Error { Code = x.ErrorCode, Message = x.ErrorMessage }).ToList();
+                return validation?.Errors
+                                  .Select(x => new Error { Code = x.ErrorCode, Message = x.ErrorMessage })
+                                  .ToList();
             else return new List<Error>();
         
         }

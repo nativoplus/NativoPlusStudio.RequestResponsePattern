@@ -49,7 +49,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
         protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
 
-        protected HttpResponse Ok<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse Ok<TResponse>(TResponse response) where TResponse : class
         {
 
             if (response == null)
@@ -65,14 +65,13 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        protected HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class
         {
             if (response == null)
             {
                 throw new ArgumentNullException(nameof(response));
             }
             _logger.Error("#BadRequest {@Response}", response);
-            //TODO validation based on the object here. 
             return new HttpResponse
             {
                 Response = response,
@@ -80,7 +79,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-        protected HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class
+        public HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class
         {
             if (response == null)
             {
@@ -91,11 +90,7 @@ namespace NativoPlusStudio.RequestResponsePattern
             {
                 Response = response,
                 HttpStatusCode = HttpStatusCode.InternalServerError,
-
             };
         }
     }
 }
-
-
-
