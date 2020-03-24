@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net;
 using FluentValidation.Results;
+using System.Collections.Generic;
 #endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
@@ -52,6 +53,31 @@ namespace NativoPlusStudio.RequestResponsePattern
             {
                 Response = response,
                 HttpStatusCode = HttpStatusCode.OK,
+
+            };
+        }
+        public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null) where TResponse : class, new()
+        {
+            if (string.IsNullOrWhiteSpace(transactionId))
+            {
+                transactionId = Guid.NewGuid().ToString();
+            }
+            var response = (new HttpStandardResponse<TResponse>
+            {
+                Response = null,
+                Error = new List<Error>() {
+                     new Error{ 
+                      Code =code ?? "NullRequest",
+                      Message = errorMessage ?? "The request was null"
+                     }
+                 },
+                Status = false,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
+            return new HttpResponse
+            {
+                Response = response,
+                HttpStatusCode = HttpStatusCode.BadRequest,
 
             };
         }
