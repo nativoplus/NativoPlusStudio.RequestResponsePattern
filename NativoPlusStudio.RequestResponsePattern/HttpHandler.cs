@@ -78,7 +78,6 @@ namespace NativoPlusStudio.RequestResponsePattern
             {
                 Response = response,
                 HttpStatusCode = HttpStatusCode.BadRequest,
-
             };
         }
         public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class, new()
