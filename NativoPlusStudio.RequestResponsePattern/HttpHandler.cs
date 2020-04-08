@@ -45,15 +45,20 @@ namespace NativoPlusStudio.RequestResponsePattern
 
         protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
 
-        public HttpResponse Ok<TResponse>(TResponse response) where TResponse : class, new()
+        public HttpResponse Ok<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
-
+            var mresponse = (new HttpStandardResponse<TResponse>
+            {
+                Response = response,
+                Error = null,
+                Status = true,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
             _logger.Information("#HandleAsync {@Response}", response ?? new TResponse());
             return new HttpResponse
             {
-                Response = response,
+                Response = mresponse,
                 HttpStatusCode = HttpStatusCode.OK,
-
             };
         }
         public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null) where TResponse : class, new()
@@ -80,23 +85,32 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
-        public HttpResponse BadRequest<TResponse>(TResponse response) where TResponse : class, new()
+        public HttpResponse BadRequest<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
             if (response == null)
             {
                 response = new TResponse();
                 _logger.Error("#BadRequest the response was null when sent to the middleware pipeline");
             }
-            //At least we get to record what the response was.
+            // At least we get to record what the response was.
             _logger.Error("#BadRequest {@Response}", response ?? new TResponse());
+
+            var mresponse = (new HttpStandardResponse<TResponse>
+            {
+                Response = response,
+                Error = null,
+                Status = false,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
 
             return new HttpResponse
             {
-                Response = response,
+                Response = mresponse,
                 HttpStatusCode = HttpStatusCode.BadRequest,
 
             };
         }
+          
         public HttpResponse BadRequest<TResponse>(ValidationResult validation, string transactionId = "") where TResponse : class, new()
         {
 
