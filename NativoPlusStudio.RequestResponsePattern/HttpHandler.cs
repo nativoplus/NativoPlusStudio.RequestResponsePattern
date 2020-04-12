@@ -8,6 +8,7 @@ using Serilog;
 using System.Net;
 using FluentValidation.Results;
 using System.Collections.Generic;
+using System.Linq;
 #endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
@@ -85,6 +86,28 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
+        public HttpResponse BadRequest(IList<Error> error , string transactionId = "") 
+        {
+            if (!error.Any())
+            {
+                error = new List<Error>();
+            }
+       
+            var mresponse = (new HttpStandardResponse<object>
+            {
+                Response = null,
+                Error = error,
+                Status = false,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
+            return new HttpResponse
+            {
+                Response = mresponse,
+                HttpStatusCode = HttpStatusCode.BadRequest
+            };
+        }
+
+
         public HttpResponse BadRequest<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
             if (response == null)
