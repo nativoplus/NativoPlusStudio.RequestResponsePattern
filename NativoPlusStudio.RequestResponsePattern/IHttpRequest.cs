@@ -5,5 +5,6 @@ namespace NativoPlusStudio.RequestResponsePattern
 {
     public interface IHttpRequest : IRequest<IActionResult>
     {
+        string TransactionId { get; set; }
     }
 }

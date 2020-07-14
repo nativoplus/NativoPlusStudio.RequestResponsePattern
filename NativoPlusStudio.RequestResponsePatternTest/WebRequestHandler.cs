@@ -8,6 +8,7 @@ namespace NativoPlusStudio.RequestResponsePatternTest
 {
     public class MyRequest :IHttpRequest {
         public int Test { get; set; }
+        public string TransactionId { get; set; } = Guid.NewGuid().ToString();
     }
     public class MyResponse {
         public int MyResultTest { get; set; }
