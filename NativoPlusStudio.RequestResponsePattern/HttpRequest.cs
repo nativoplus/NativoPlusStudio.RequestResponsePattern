@@ -1,7 +1,9 @@
-﻿namespace NativoPlusStudio.RequestResponsePattern
+﻿using System;
+
+namespace NativoPlusStudio.RequestResponsePattern
 {
     public abstract class HttpRequest : IHttpRequest
     {
-        public string TransactionId { get; set; }
+        public string TransactionId { get; set; } = Guid.NewGuid().ToString();
     }
 }
