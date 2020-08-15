@@ -47,7 +47,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
         protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
 
-        public ValidationResult Validate<TValidator>(TRequest request) where TValidator : AbstractValidator<TRequest>, new()
+        public virtual ValidationResult Validate<TValidator>(TRequest request) where TValidator : AbstractValidator<TRequest>, new()
         {
             return new TValidator().Validate(request);
         }
