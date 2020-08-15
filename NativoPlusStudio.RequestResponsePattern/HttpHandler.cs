@@ -9,6 +9,7 @@ using System.Net;
 using FluentValidation.Results;
 using System.Collections.Generic;
 using System.Linq;
+using FluentValidation;
 #endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
@@ -41,10 +42,15 @@ namespace NativoPlusStudio.RequestResponsePattern
             // https://medium.com/bynder-tech/c-why-you-should-use-configureawait-false-in-your-library-code-d7837dce3d7f
             var model = await HandleAsync(request, cancellationToken).ConfigureAwait(false);
             _logger.Information("#Handle {@Response}", model?.Response ?? new object());
-            return new OkObjectResult(model?.Response ?? new HttpResponse() { HttpStatusCode = HttpStatusCode.BadRequest, Response = null });
+            return new ObjectResult(model?.Response ?? new HttpResponse() { HttpStatusCode = HttpStatusCode.BadRequest, Response = null }) { StatusCode = (int)(model?.HttpStatusCode ?? HttpStatusCode.BadRequest) };
         }
 
         protected abstract Task<HttpResponse> HandleAsync(TRequest input, CancellationToken cancellationToken = default);
+
+        public virtual ValidationResult Validate<TValidator>(TRequest request) where TValidator : AbstractValidator<TRequest>, new()
+        {
+            return new TValidator().Validate(request);
+        }
 
         public HttpResponse Ok<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
@@ -60,6 +66,23 @@ namespace NativoPlusStudio.RequestResponsePattern
             {
                 Response = mresponse,
                 HttpStatusCode = HttpStatusCode.OK,
+            };
+        }
+
+        public HttpResponse Created<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
+        {
+            var mresponse = (new HttpStandardResponse<TResponse>
+            {
+                Response = response,
+                Error = null,
+                Status = true,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
+            _logger.Information("#HandleAsync {@Response}", response ?? new TResponse());
+            return new HttpResponse
+            {
+                Response = mresponse,
+                HttpStatusCode = HttpStatusCode.Created,
             };
         }
         public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null) where TResponse : class, new()
@@ -191,5 +214,6 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.UnprocessableEntity
             };
         }
+
     }
 }
