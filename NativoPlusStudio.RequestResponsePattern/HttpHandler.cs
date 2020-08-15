@@ -187,5 +187,33 @@ namespace NativoPlusStudio.RequestResponsePattern
             };
         }
 
+        /// <summary>
+        /// Returns an Unprocessable Entity Response 
+        /// in reference to <see href="https://www.bennadel.com/blog/2434-http-status-codes-for-invalid-data-400-vs-422.htm#:~:text=The%20422%20(Unprocessable%20Entity)%20status,was%20unable%20to%20process%20the">here</see>
+        /// </summary>
+        /// <param name="error"></param>
+        /// <param name="transactionId"></param>
+        /// <returns></returns>
+        public HttpResponse UnprocessableEntityBadRequest(IList<Error> error, string transactionId = "")
+        {
+            if (!error.Any())
+            {
+                error = new List<Error>();
+            }
+
+            var mresponse = (new HttpStandardResponse<object>
+            {
+                Response = null,
+                Error = error,
+                Status = false,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
+            return new HttpResponse
+            {
+                Response = mresponse,
+                HttpStatusCode = HttpStatusCode.UnprocessableEntity
+            };
+        }
+
     }
 }
