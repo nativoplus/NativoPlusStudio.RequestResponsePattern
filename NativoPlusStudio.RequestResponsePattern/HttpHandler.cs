@@ -85,7 +85,7 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.Created,
             };
         }
-        public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null) where TResponse : class, new()
+        public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null, HttpStatusCode statusCode = HttpStatusCode.BadRequest) where TResponse : class, new()
         {
             if (string.IsNullOrWhiteSpace(transactionId))
             {
@@ -106,10 +106,10 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new HttpResponse
             {
                 Response = response,
-                HttpStatusCode = HttpStatusCode.BadRequest,
+                HttpStatusCode = statusCode,
             };
         }
-        public HttpResponse BadRequest(IList<Error> error , string transactionId = "") 
+        public HttpResponse BadRequest(IList<Error> error , string transactionId = "", HttpStatusCode statusCode = HttpStatusCode.BadRequest) 
         {
             if (!error.Any())
             {
@@ -126,12 +126,12 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new HttpResponse
             {
                 Response = mresponse,
-                HttpStatusCode = HttpStatusCode.BadRequest
+                HttpStatusCode = statusCode
             };
         }
 
 
-        public HttpResponse BadRequest<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
+        public HttpResponse BadRequest<TResponse>(TResponse response, string transactionId = "", HttpStatusCode statusCode = HttpStatusCode.BadRequest) where TResponse : class, new()
         {
             if (response == null)
             {
@@ -152,12 +152,12 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new HttpResponse
             {
                 Response = mresponse,
-                HttpStatusCode = HttpStatusCode.BadRequest,
+                HttpStatusCode = statusCode,
 
             };
         }
           
-        public HttpResponse BadRequest<TResponse>(ValidationResult validation, string transactionId = "") where TResponse : class, new()
+        public HttpResponse BadRequest<TResponse>(ValidationResult validation, string transactionId = "", HttpStatusCode statusCode = HttpStatusCode.BadRequest) where TResponse : class, new()
         {
 
             if (validation == null)
@@ -174,16 +174,16 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new HttpResponse
             {
                 Response = response,
-                HttpStatusCode = HttpStatusCode.BadRequest,
+                HttpStatusCode = statusCode,
             };
         }
-        public HttpResponse InternalServerError<TResponse>(TResponse response) where TResponse : class, new()
+        public HttpResponse InternalServerError<TResponse>(TResponse response, HttpStatusCode statusCode = HttpStatusCode.InternalServerError) where TResponse : class, new()
         {
             _logger.Error("#InternalServerError {@Response}", response ?? new TResponse());
             return new HttpResponse
             {
                 Response = response,
-                HttpStatusCode = HttpStatusCode.InternalServerError,
+                HttpStatusCode = statusCode,
             };
         }
 
