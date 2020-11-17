@@ -52,6 +52,7 @@ namespace NativoPlusStudio.RequestResponsePattern
             return new TValidator().Validate(request);
         }
 
+
         public HttpResponse Ok<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
             var mresponse = (new HttpStandardResponse<TResponse>
