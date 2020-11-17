@@ -51,7 +51,24 @@ namespace NativoPlusStudio.RequestResponsePattern
         {
             return new TValidator().Validate(request);
         }
-
+        
+        public HttpResponse OkList<TResponse>(TResponse response, int totalCount , string transactionId = "") where TResponse : class, new()
+        {
+            var mresponse = (new HttpStandardListResponse<TResponse>
+            {
+                Response = response,
+                Error = null,
+                Status = true,
+                TotalCount = totalCount,
+                TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
+            });
+            _logger.Information("#HandleAsync {@Response}", response ?? new TResponse());
+            return new HttpResponse
+            {
+                Response = mresponse,
+                HttpStatusCode = HttpStatusCode.OK,
+            };
+        }
 
         public HttpResponse Ok<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
