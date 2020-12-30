@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Net;
 
 namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
 {
@@ -23,7 +24,7 @@ namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
                               from error in modelState.Errors
                               select new Error
                               {
-                                  Code = controllerName,
+                                  Code = ((int)HttpStatusCode.BadRequest).ToString(),
                                   Message = error?.ErrorMessage ?? "We could not find a reason for the error. Very strange indeed"
                               }).ToList();
                 var mresponse = (new HttpStandardResponse<object>
