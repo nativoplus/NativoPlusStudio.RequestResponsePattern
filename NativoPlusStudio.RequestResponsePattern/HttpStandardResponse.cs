@@ -11,4 +11,13 @@ namespace NativoPlusStudio.RequestResponsePattern
         public T Response { get; set; }
         public IList<Error> Error { get; set; }
     }
+
+    public partial class HttpStandardResponse
+    {
+        public bool Status { get; set; }
+        public string TransactionId { get; set; }
+        public object Response { get; set; }
+        public IList<Error> Error { get; set; }
+    }
+
 }

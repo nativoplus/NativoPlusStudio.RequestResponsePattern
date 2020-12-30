@@ -51,8 +51,8 @@ namespace NativoPlusStudio.RequestResponsePattern
         {
             return new TValidator().Validate(request);
         }
-        
-        public HttpResponse OkList<TResponse>(TResponse response, int totalCount , string transactionId = "") where TResponse : class, new()
+
+        public HttpResponse OkList<TResponse>(TResponse response, int totalCount, string transactionId = "") where TResponse : class, new()
         {
             var mresponse = (new HttpStandardListResponse<TResponse>
             {
@@ -103,7 +103,7 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.Created,
             };
         }
-        public HttpResponse NullBadRequest<TResponse>(string transactionId, string code =null, string errorMessage = null) where TResponse : class, new()
+        public HttpResponse NullBadRequest<TResponse>(string transactionId, string code = null, string errorMessage = null) where TResponse : class, new()
         {
             if (string.IsNullOrWhiteSpace(transactionId))
             {
@@ -113,7 +113,7 @@ namespace NativoPlusStudio.RequestResponsePattern
             {
                 Response = null,
                 Error = new List<Error>() {
-                     new Error{ 
+                     new Error{
                       Code =code ?? "NullRequest",
                       Message = errorMessage ?? "The request was null"
                      }
@@ -127,27 +127,27 @@ namespace NativoPlusStudio.RequestResponsePattern
                 HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
-        public HttpResponse BadRequest(IList<Error> error , string transactionId = "") 
+     
+        public HttpResponse BadRequest(List<Error> errors, string controllerName, string transactionId = "")
         {
-            if (!error.Any())
+            if (errors.Any())
             {
-                error = new List<Error>();
+                _logger.Error("#BadRequest {errors}", errors);
             }
-       
-            var mresponse = (new HttpStandardResponse<object>
+            var mresponse = (new HttpStandardResponse
             {
                 Response = null,
-                Error = error,
+                Error = errors,
                 Status = false,
                 TransactionId = string.IsNullOrWhiteSpace(transactionId) ? Guid.NewGuid().ToString() : transactionId
             });
+
             return new HttpResponse
             {
                 Response = mresponse,
-                HttpStatusCode = HttpStatusCode.BadRequest
+                HttpStatusCode = HttpStatusCode.BadRequest,
             };
         }
-
 
         public HttpResponse BadRequest<TResponse>(TResponse response, string transactionId = "") where TResponse : class, new()
         {
@@ -174,7 +174,7 @@ namespace NativoPlusStudio.RequestResponsePattern
 
             };
         }
-          
+
         public HttpResponse BadRequest<TResponse>(ValidationResult validation, string transactionId = "") where TResponse : class, new()
         {
 
