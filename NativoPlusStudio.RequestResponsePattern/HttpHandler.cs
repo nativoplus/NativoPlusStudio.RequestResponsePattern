@@ -128,7 +128,7 @@ namespace NativoPlusStudio.RequestResponsePattern
             };
         }
      
-        public HttpResponse BadRequest(List<Error> errors, string controllerName, string transactionId = "")
+        public HttpResponse BadRequestSimple(List<Error> errors, string controllerName, string transactionId = "")
         {
             if (errors.Any())
             {
