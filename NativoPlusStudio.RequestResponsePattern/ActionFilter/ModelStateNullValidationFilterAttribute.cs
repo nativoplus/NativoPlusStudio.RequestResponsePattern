@@ -4,12 +4,21 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
+using Serilog;
 
 namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
 {
     public class ModelStateNullValidationFilterAttribute : ActionFilterAttribute
     {
         private readonly Func<Dictionary<string, object>, bool> _validate = args => args.ContainsValue(null);
+        private readonly ILogger _logger;
+
+        public ModelStateNullValidationFilterAttribute(ILogger logger = null)
+        {
+            _logger = logger ?? new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+        }
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -34,6 +43,7 @@ namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
                     Status = false,
                     TransactionId = Guid.NewGuid().ToString()
                 });
+                _logger.Error("#400 Status Errors: {@Errors}", mresponse);
                 context.Result = new BadRequestObjectResult(mresponse);
             }
 
