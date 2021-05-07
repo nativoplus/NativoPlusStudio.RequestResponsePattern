@@ -25,6 +25,7 @@ namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
             var methodType = context?.HttpContext?.Request?.Method ?? "Unknown";
             var actionArgumentsDictionary = new Dictionary<string, object>(context.ActionArguments);
 
+            
             if (!context.ModelState.IsValid && !_validate(actionArgumentsDictionary) && (methodType == "POST" || methodType == "PUT"))
             {
 
@@ -43,7 +44,7 @@ namespace NativoPlusStudio.RequestResponsePattern.ActionFilter
                     Status = false,
                     TransactionId = Guid.NewGuid().ToString()
                 });
-                _logger.Error("#400 Status Errors: {@Errors}", mresponse);
+                _logger.Error("#{@Controller} 400 Status Errors: {@Errors}", controllerName, mresponse);
                 context.Result = new BadRequestObjectResult(mresponse);
             }
 
