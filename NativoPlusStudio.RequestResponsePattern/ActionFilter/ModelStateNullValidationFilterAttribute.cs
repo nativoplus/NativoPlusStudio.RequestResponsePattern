@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Net;
 using Serilog;
 
