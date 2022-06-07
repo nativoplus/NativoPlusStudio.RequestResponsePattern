@@ -17,7 +17,7 @@ namespace NativoPlusStudio.RequestResponsePattern
        where TRequest : class, IHttpRequest, new()
     {
         public readonly ILogger _logger;
-        protected HttpHandler(ILogger logger = null)
+        protected HttpHandler(ILogger? logger = null)
         {
             if (logger == null)
             {
