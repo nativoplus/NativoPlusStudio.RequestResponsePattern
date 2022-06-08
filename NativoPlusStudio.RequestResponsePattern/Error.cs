@@ -1,7 +1,5 @@
 ﻿#region Assembly
 using FluentValidation.Results;
-using System.Collections.Generic;
-using System.Linq;
 #endregion
 namespace NativoPlusStudio.RequestResponsePattern
 {
